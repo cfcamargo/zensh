@@ -76,9 +76,44 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
-alias ls='ls --color'
+# alias ls='ls --color'
 alias vim='nvim'
 alias c='clear'
+alias bat="batcat"
+# Usa bat no lugar de cat, com tema fixo (ajuste o tema se quiser: GitHub, Nord, OneHalfDark, etc.)
+alias cat="bat --theme=Nord"
+
+# Atalho rápido para ls -la
+alias l="ls -la"
+
+# Usa eza (substituto moderno do ls), com cores, ícones e git integrado
+alias ls="eza --color=always --long --git --icons=always --no-filesize --no-time --no-user --no-permissions"
+
+# Usa zoxide no lugar de cd para navegação inteligente
+# alias cd="z"
+
+alias ndev="npm run dev"
+alias pdev="pnpm run dev"
+alias chadi="npx shadcn@latest add"
+alias pchadi="pnpm dlx shadcn@latest add"
+alias nestd="npm run start:dev"
+alias dlx="pnpm dlx"
+alias bx="bunx --bun"
+alias bdk="bunx --bun drizzle-kit"
+alias mvm="mini-video-me --no-sandbox"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+#zed
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 # Shell integrations
 eval "$(fzf --zsh)"
