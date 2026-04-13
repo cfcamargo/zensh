@@ -101,6 +101,7 @@ alias dlx="pnpm dlx"
 alias bx="bunx --bun"
 alias bdk="bunx --bun drizzle-kit"
 alias mvm="mini-video-me --no-sandbox"
+alias dcu="docker compose up -d"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
