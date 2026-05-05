@@ -1,0 +1,117 @@
+# --- POWERLEVEL10K INSTANT PROMPT ---
+# Deve permanecer no topo para garantir a inicialização rápida.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# --- CORREÇÃO DO ERRO COMPINIT (DOCKER) ---
+# Silencia o erro 'no such file or directory: _docker' para não quebrar o instant prompt.
+autoload -Uz compinit
+compinit -d "${XDG_CACHE_HOME:-$HOME}/.zcompdump" 2>/dev/null
+
+# --- HOMEBREW (Se existir) ---
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# --- ZINIT SETUP ---
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "${ZINIT_HOME}/zinit.zsh"
+
+# --- PLUGINS & THEME ---
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+
+# --- OH MY ZSH SNIPPETS ---
+zinit snippet OMZL::git.zsh
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
+zinit snippet OMZP::command-not-found
+
+# Aplica as completações dos plugins carregados
+zinit cdreplay -q
+
+# --- CONFIGURAÇÃO P10K ---
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# --- KEYBINDINGS ---
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey '^[w' kill-region
+
+# --- HISTORY ---
+HISTSIZE=5000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTDUP=erase
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# --- COMPLETION STYLING ---
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+# --- ALIASES ---
+alias vim='nvim'
+alias c='clear'
+alias bat="batcat"
+alias cat="bat --theme=Nord"
+alias l="ls -la"
+alias ls="eza --color=always --long --git --icons=always --no-filesize --no-time --no-user --no-permissions"
+
+# Dev Aliases
+alias ndev="npm run dev"
+alias pdev="pnpm run dev"
+alias chadi="npx shadcn@latest add"
+alias pchadi="pnpm dlx shadcn@latest add"
+alias nestd="npm run start:dev"
+alias dlx="pnpm dlx"
+alias bx="bunx --bun"
+alias bdk="bunx --bun drizzle-kit"
+alias mvm="mini-video-me --no-sandbox"
+alias dcu="docker compose up -d"
+
+# --- ENV & PATHS ---
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# BUN
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# ZED & NVIM
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
+# ZOXIDE
+eval "$(zoxide init zsh --cmd cd)"
+
+# PNPM
+export PNPM_HOME="/home/cristian/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
